@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Saat Bilgi</string>
+    <string name="app_version">Sürüm %1$s</string>
+    <string name="error_load">Bilgi okunamadı: %1$s</string>
+
+    <!-- Kategoriler -->
+    <string name="cat_system">Sistem</string>
+    <string name="cat_cpu">İşlemci</string>
+    <string name="cat_gpu">Grafik</string>
+    <string name="cat_memory">Bellek</string>
+    <string name="cat_storage">Depolama</string>
+    <string name="cat_display">Ekran</string>
+    <string name="cat_battery">Pil</string>
+    <string name="cat_thermal">Sıcaklık</string>
+    <string name="cat_connectivity">Bağlantı</string>
+    <string name="cat_sensors">Sensörler</string>
+
+    <!-- Ana ekran göstergeleri -->
+    <string name="gauge_battery">Pil</string>
+    <string name="gauge_ram">RAM</string>
+    <string name="gauge_storage">Depo</string>
+
+    <!-- Biçimler -->
+    <string name="fmt_wear_os">Wear OS %1$s</string>
+    <string name="fmt_android">Android %1$s</string>
+    <string name="fmt_duration_dhm">%1$d g %2$d sa %3$d dk</string>
+    <string name="fmt_duration_hm">%1$d sa %2$d dk</string>
+    <string name="fmt_duration_m">%1$d dk</string>
+    <string name="fmt_seconds">%1$d sn</string>
+    <string name="unit_steps">adım</string>
+
+    <plurals name="core_count">
+        <item quantity="one">%1$d çekirdek</item>
+        <item quantity="other">%1$d çekirdek</item>
+    </plurals>
+    <plurals name="sensor_count">
+        <item quantity="one">%1$d sensör</item>
+        <item quantity="other">%1$d sensör</item>
+    </plurals>
+
+    <!-- Grup başlıkları -->
+    <string name="group_device">Cihaz</string>
+    <string name="group_software">Yazılım</string>
+    <string name="group_runtime">Çalışma</string>
+    <string name="group_platform">Platform</string>
+    <string name="group_processor">Genel</string>
+    <string name="group_core_clocks">Anlık çekirdek hızları</string>
+    <string name="group_frequency_range">Frekans aralığı</string>
+    <string name="group_instruction_set">Komut seti</string>
+    <string name="group_gpu">Grafik işlemcisi</string>
+    <string name="group_graphics_api">Grafik API\'leri</string>
+    <string name="group_ram">RAM</string>
+    <string name="group_swap">Takas alanı (zRAM)</string>
+    <string name="group_kernel_memory">Çekirdek belleği</string>
+    <string name="group_app_heap">Uygulama yığını</string>
+    <string name="group_internal_storage">Dahili depolama</string>
+    <string name="group_system_partition">Sistem bölümü</string>
+    <string name="group_panel">Panel</string>
+    <string name="group_color">Renk</string>
+    <string name="group_interface">Arayüz</string>
+    <string name="group_settings">Ayarlar</string>
+    <string name="group_battery_status">Durum</string>
+    <string name="group_electrical">Elektriksel</string>
+    <string name="group_capacity">Kapasite</string>
+    <string name="group_other">Diğer</string>
+    <string name="group_thermal_state">Termal durum</string>
+    <string name="group_thermal_zones">Termal bölgeler</string>
+    <string name="group_network">Ağ</string>
+    <string name="group_wifi">Wi-Fi</string>
+    <string name="group_bluetooth">Bluetooth</string>
+    <string name="group_cellular">Hücresel (LTE)</string>
+    <string name="group_location">Konum</string>
+    <string name="group_other_hardware">Diğer donanım</string>
+    <string name="group_sensor_specs">Özellikler</string>
+
+    <!-- Sistem -->
+    <string name="label_device_name">Cihaz adı</string>
+    <string name="label_manufacturer">Üretici</string>
+    <string name="label_brand">Marka</string>
+    <string name="label_model">Model</string>
+    <string name="label_codename">Kod adı</string>
+    <string name="label_product">Ürün</string>
+    <string name="label_board">Anakart</string>
+    <string name="label_hardware">Donanım</string>
+    <string name="label_wear_os">Wear OS</string>
+    <string name="label_one_ui">One UI Watch</string>
+    <string name="label_android">Android</string>
+    <string name="label_api_level">API düzeyi</string>
+    <string name="label_security_patch">Güvenlik yaması</string>
+    <string name="label_build_number">Yapı numarası</string>
+    <string name="label_build_date">Yapı tarihi</string>
+    <string name="label_build_type">Yapı türü</string>
+    <string name="label_kernel">Linux çekirdeği</string>
+    <string name="label_runtime">Çalışma zamanı</string>
+    <string name="label_bootloader">Önyükleyici</string>
+    <string name="label_baseband">Modem yazılımı</string>
+    <string name="label_fingerprint">Parmak izi</string>
+    <string name="label_uptime">Açık kalma süresi</string>
+    <string name="label_awake_time">Uyanık süre</string>
+    <string name="label_deep_sleep">Derin uyku oranı</string>
+    <string name="label_language">Dil</string>
+    <string name="label_time_zone">Saat dilimi</string>
+    <string name="label_treble">Project Treble</string>
+    <string name="label_feature_count">Sistem özelliği sayısı</string>
+
+    <!-- İşlemci -->
+    <string name="label_soc">Yonga (SoC)</string>
+    <string name="label_platform">Platform</string>
+    <string name="label_architecture">Mimari</string>
+    <string name="label_abis">Desteklenen ABI\'ler</string>
+    <string name="label_cores">Çekirdekler</string>
+    <string name="label_clusters">Kümeler</string>
+    <string name="label_governor">Frekans yöneticisi</string>
+    <string name="label_core_n">Çekirdek %1$d</string>
+    <string name="label_core_range">Çekirdek %1$d–%2$d</string>
+    <string name="label_features">Özellikler</string>
+
+    <!-- Grafik -->
+    <string name="label_gpu_renderer">GPU</string>
+    <string name="label_gpu_vendor">Üretici</string>
+    <string name="label_gpu_driver">Sürücü</string>
+    <string name="label_max_texture">Azami doku boyutu</string>
+    <string name="label_opengl_es">OpenGL ES</string>
+    <string name="label_glsl">GLSL</string>
+    <string name="label_gl_extensions">GL uzantıları</string>
+    <string name="label_vulkan">Vulkan</string>
+    <string name="label_vulkan_level">Vulkan donanım düzeyi</string>
+    <string name="label_vulkan_compute">Vulkan hesaplama</string>
+    <string name="label_egl">EGL</string>
+
+    <!-- Bellek -->
+    <string name="label_ram_installed">Kurulu RAM</string>
+    <string name="label_ram_total">Sistemin gördüğü</string>
+    <string name="label_ram_used">Kullanılan</string>
+    <string name="label_ram_available">Kullanılabilir</string>
+    <string name="label_ram_threshold">Düşük bellek eşiği</string>
+    <string name="label_low_memory">Bellek az mı?</string>
+    <string name="label_low_ram_device">Düşük RAM cihazı</string>
+    <string name="label_swap_total">Toplam</string>
+    <string name="label_swap_used">Kullanılan</string>
+    <string name="label_mem_free">Boş</string>
+    <string name="label_mem_cached">Önbellek</string>
+    <string name="label_mem_buffers">Arabellek</string>
+    <string name="label_mem_shared">Paylaşılan</string>
+    <string name="label_heap_standard">Standart sınır</string>
+    <string name="label_heap_large">Büyük yığın sınırı</string>
+    <string name="label_heap_max">Bu uygulamanın sınırı</string>
+
+    <!-- Depolama -->
+    <string name="label_storage_capacity">Kapasite</string>
+    <string name="label_storage_user">Bölüm boyutu</string>
+    <string name="label_storage_used">Kullanılan</string>
+    <string name="label_storage_free">Boş</string>
+    <string name="label_file_system">Dosya sistemi</string>
+    <string name="label_encryption">Şifreleme</string>
+
+    <!-- Ekran -->
+    <string name="label_resolution">Çözünürlük</string>
+    <string name="label_shape">Şekil</string>
+    <string name="label_diagonal">Boyut (tahmini)</string>
+    <string name="label_pixel_density">Piksel yoğunluğu</string>
+    <string name="label_refresh_rate">Yenileme hızı</string>
+    <string name="label_supported_rates">Desteklenen hızlar</string>
+    <string name="label_display_name">Ekran adı</string>
+    <string name="label_wide_color">Geniş renk gamı</string>
+    <string name="label_hdr">HDR</string>
+    <string name="label_color_space">Tercih edilen renk uzayı</string>
+    <string name="label_density">Yoğunluk</string>
+    <string name="label_logical_size">Mantıksal boyut</string>
+    <string name="label_font_scale">Yazı ölçeği</string>
+    <string name="label_brightness">Parlaklık</string>
+    <string name="label_auto_brightness">Otomatik parlaklık</string>
+    <string name="label_screen_timeout">Ekran zaman aşımı</string>
+
+    <!-- Pil -->
+    <string name="label_battery_level">Seviye</string>
+    <string name="label_battery_status">Durum</string>
+    <string name="label_power_source">Güç kaynağı</string>
+    <string name="label_battery_health">Sağlık</string>
+    <string name="label_time_to_full">Tam şarja kalan</string>
+    <string name="label_power_save">Güç tasarrufu</string>
+    <string name="label_voltage">Gerilim</string>
+    <string name="label_current">Anlık akım</string>
+    <string name="label_current_average">Ortalama akım</string>
+    <string name="label_power">Güç</string>
+    <string name="label_design_capacity">Tasarım kapasitesi</string>
+    <string name="label_estimated_capacity">Tahmini gerçek kapasite</string>
+    <string name="label_capacity_health">Kapasite sağlığı</string>
+    <string name="label_remaining_charge">Kalan şarj</string>
+    <string name="label_cycle_count">Şarj döngüsü</string>
+    <string name="label_temperature">Sıcaklık</string>
+    <string name="label_technology">Teknoloji</string>
+
+    <!-- Sıcaklık -->
+    <string name="label_thermal_status">Kısıtlama durumu</string>
+    <string name="label_thermal_headroom">Termal yük (10 sn tahmini)</string>
+    <string name="label_battery_temperature">Pil sıcaklığı</string>
+    <string name="label_thermal_zones">Bölge sensörleri</string>
+
+    <!-- Bağlantı -->
+    <string name="label_active_network">Etkin bağlantı</string>
+    <string name="label_internet">İnternet erişimi</string>
+    <string name="label_metered">Ölçülü bağlantı</string>
+    <string name="label_downstream">İndirme hızı (tahmini)</string>
+    <string name="label_upstream">Yükleme hızı (tahmini)</string>
+    <string name="label_status">Durum</string>
+    <string name="label_band_5ghz">5 GHz bandı</string>
+    <string name="label_band_6ghz">6 GHz bandı</string>
+    <string name="label_wifi_standards">Standartlar</string>
+    <string name="label_wifi_direct">Wi-Fi Direct</string>
+    <string name="label_ble">Bluetooth LE</string>
+    <string name="label_le_2m_phy">LE 2M PHY</string>
+    <string name="label_le_coded_phy">LE Coded PHY (uzun menzil)</string>
+    <string name="label_le_extended_adv">Genişletilmiş yayın</string>
+    <string name="label_le_audio">LE Audio</string>
+    <string name="label_sim_state">SIM durumu</string>
+    <string name="label_operator">Operatör</string>
+    <string name="label_esim">eSIM</string>
+    <string name="label_gps">GPS</string>
+    <string name="label_location_service">Konum hizmeti</string>
+    <string name="label_gnss_model">GNSS donanımı</string>
+    <string name="label_gnss_year">GNSS donanım yılı</string>
+    <string name="label_nfc">NFC</string>
+    <string name="label_uwb">UWB</string>
+    <string name="label_speaker">Hoparlör</string>
+    <string name="label_microphone">Mikrofon</string>
+    <string name="label_vibration">Titreşim</string>
+
+    <!-- Sensörler -->
+    <string name="label_sensor_type">Tür</string>
+    <string name="label_sensor_string_type">Tür kimliği</string>
+    <string name="label_sensor_vendor">Üretici</string>
+    <string name="label_sensor_version">Sürüm</string>
+    <string name="label_sensor_range">Azami aralık</string>
+    <string name="label_sensor_resolution">Çözünürlük</string>
+    <string name="label_sensor_power">Güç tüketimi</string>
+    <string name="label_sensor_max_rate">Azami örnekleme</string>
+    <string name="label_sensor_reporting">Raporlama</string>
+    <string name="label_sensor_wakeup">Uyandırma sensörü</string>
+    <string name="label_sensor_fifo">FIFO kapasitesi</string>
+    <string name="sensor_waiting">Veri bekleniyor…</string>
+    <string name="sensor_no_data">Veri gelmiyor. Bu sensör izin gerektiriyor ya da yalnızca bir olay olduğunda veri üretiyor olabilir.</string>
+    <string name="sensor_unavailable">Bu sensör sürekli dinlenemiyor; yalnızca tetiklendiğinde veri verir.</string>
+    <string name="sensor_accelerometer">İvmeölçer</string>
+    <string name="sensor_accelerometer_uncal">İvmeölçer (kalibresiz)</string>
+    <string name="sensor_gyroscope">Jiroskop</string>
+    <string name="sensor_gyroscope_uncal">Jiroskop (kalibresiz)</string>
+    <string name="sensor_magnetic">Manyetometre</string>
+    <string name="sensor_magnetic_uncal">Manyetometre (kalibresiz)</string>
+    <string name="sensor_light">Işık sensörü</string>
+    <string name="sensor_pressure">Barometre</string>
+    <string name="sensor_proximity">Yakınlık sensörü</string>
+    <string name="sensor_gravity">Yerçekimi</string>
+    <string name="sensor_linear_acceleration">Doğrusal ivme</string>
+    <string name="sensor_rotation_vector">Dönüş vektörü</string>
+    <string name="sensor_game_rotation_vector">Oyun dönüş vektörü</string>
+    <string name="sensor_geomagnetic_rotation_vector">Jeomanyetik dönüş vektörü</string>
+    <string name="sensor_humidity">Nem</string>
+    <string name="sensor_ambient_temperature">Ortam sıcaklığı</string>
+    <string name="sensor_heart_rate">Nabız</string>
+    <string name="sensor_heart_beat">Kalp atışı</string>
+    <string name="sensor_step_counter">Adım sayacı</string>
+    <string name="sensor_step_detector">Adım algılayıcı</string>
+    <string name="sensor_significant_motion">Belirgin hareket</string>
+    <string name="sensor_stationary">Hareketsizlik algılama</string>
+    <string name="sensor_motion">Hareket algılama</string>
+    <string name="sensor_offbody">Bilekten çıkarma algılama</string>
+    <string name="sensor_pose">6 eksenli konum</string>
+    <string name="sensor_hinge">Menteşe açısı</string>
+
+    <!-- Değerler -->
+    <string name="value_yes">Evet</string>
+    <string name="value_no">Hayır</string>
+    <string name="value_on">Açık</string>
+    <string name="value_off">Kapalı</string>
+    <string name="value_supported">Destekleniyor</string>
+    <string name="value_not_supported">Desteklenmiyor</string>
+    <string name="value_unknown">Bilinmiyor</string>
+    <string name="value_unknown_core">Bilinmeyen çekirdek</string>
+    <string name="value_offline">Uykuda</string>
+    <string name="value_restricted">Erişim kısıtlı</string>
+    <string name="value_round">Yuvarlak</string>
+    <string name="value_rectangular">Dikdörtgen</string>
+    <string name="value_encryption_fbe">Dosya tabanlı (FBE)</string>
+    <string name="value_encryption_full">Tam disk</string>
+    <string name="value_charging">Şarj oluyor</string>
+    <string name="value_discharging">Deşarj oluyor</string>
+    <string name="value_full">Dolu</string>
+    <string name="value_not_charging">Şarj olmuyor</string>
+    <string name="value_plugged_ac">Adaptör</string>
+    <string name="value_plugged_usb">USB</string>
+    <string name="value_plugged_wireless">Kablosuz şarj</string>
+    <string name="value_plugged_dock">Yuva</string>
+    <string name="value_plugged_battery">Pil</string>
+    <string name="value_health_good">İyi</string>
+    <string name="value_health_overheat">Aşırı ısınmış</string>
+    <string name="value_health_dead">Ölü</string>
+    <string name="value_health_over_voltage">Aşırı gerilim</string>
+    <string name="value_health_cold">Soğuk</string>
+    <string name="value_health_failure">Arıza</string>
+    <string name="value_thermal_none">Normal</string>
+    <string name="value_thermal_light">Hafif</string>
+    <string name="value_thermal_moderate">Orta</string>
+    <string name="value_thermal_severe">Ağır</string>
+    <string name="value_thermal_critical">Kritik</string>
+    <string name="value_thermal_emergency">Acil</string>
+    <string name="value_thermal_shutdown">Kapanma</string>
+    <string name="value_no_connection">Bağlantı yok</string>
+    <string name="value_transport_wifi">Wi-Fi</string>
+    <string name="value_transport_cellular">Hücresel</string>
+    <string name="value_transport_bluetooth">Bluetooth (telefon üzerinden)</string>
+    <string name="value_transport_ethernet">Ethernet</string>
+    <string name="value_sim_ready">Hazır</string>
+    <string name="value_sim_absent">Takılı değil</string>
+    <string name="value_sim_locked">Kilitli</string>
+    <string name="value_sim_not_ready">Hazır değil</string>
+    <string name="value_vibration_amplitude">Şiddet kontrollü</string>
+    <string name="value_reporting_continuous">Sürekli</string>
+    <string name="value_reporting_on_change">Değiştiğinde</string>
+    <string name="value_reporting_one_shot">Tek seferlik</string>
+    <string name="value_reporting_special">Özel tetikleyici</string>
+</resources>

@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Kıble</string>
+
+    <!-- Kuzey, Doğu, Güney, Batı -->
+    <string-array name="cardinals">
+        <item>K</item>
+        <item>D</item>
+        <item>G</item>
+        <item>B</item>
+    </string-array>
+    <string name="east_short">D</string>
+    <string name="west_short">B</string>
+
+    <!-- Pusula -->
+    <string name="turn_right">SAĞA DÖN</string>
+    <string name="turn_left">SOLA DÖN</string>
+    <string name="aligned">KIBLE</string>
+    <string name="qibla_bearing_short">Kıble %1$s</string>
+    <string name="compass_starting">Pusula hazırlanıyor…</string>
+    <string name="compass_unavailable">Pusula yok. Kıble, kuzeyden saat yönünde:</string>
+    <string name="hold_flat">Saati yatay tutun</string>
+    <string name="warn_calibrate">Kalibre edin</string>
+    <string name="warn_interference">Manyetik parazit</string>
+    <string name="no_location_title">Konum gerekli</string>
+    <string name="no_location_body">Kıble açısı için saatin GPS\'ini kullanın veya il/ilçe seçin. İnternet gerekmez.</string>
+    <string name="set_location">Konum belirle</string>
+
+    <!-- Konum kaynakları -->
+    <string name="source_gps">GPS</string>
+    <string name="source_gps_accuracy">GPS ±%1$d m</string>
+    <string name="source_near">%1$s yakını</string>
+    <string name="source_last_known">Son bilinen konum</string>
+    <string name="source_last_known_age">Son konum, %1$s (%2$s)</string>
+    <string name="source_table">%1$s (ilçe tablosu)</string>
+
+    <!-- Ayrıntılar -->
+    <string name="page_details">Ayrıntılar</string>
+    <string name="group_qibla">Kıble</string>
+    <string name="label_true_bearing">Kıble açısı</string>
+    <string name="note_true_bearing">Gerçek (coğrafi) kuzeyden saat yönünde, büyük daire yöntemiyle; Diyanet\'in kullandığı yöntem.</string>
+    <string name="label_magnetic_bearing">Pusulaya göre</string>
+    <string name="note_magnetic_bearing">Manyetik kuzeye göre açı; sapma düzeltmesi yapmayan klasik pusulada okunacak değer.</string>
+    <string name="label_distance">Kâbe\'ye uzaklık</string>
+    <string name="group_location">Konum</string>
+    <string name="label_source">Kaynak</string>
+    <string name="label_coordinates">Koordinat</string>
+    <string name="label_nearest_district">En yakın ilçe merkezi</string>
+    <string name="note_table_difference">Tablodaki açı %1$s · fark %2$s</string>
+    <string name="group_sun">Güneşle doğrulama</string>
+    <string name="label_qibla_time">Bugün kıble saati</string>
+    <string name="note_qibla_time">Bu saatte güneş tam kıble yönündedir: yüzünüzü güneşe dönün.</string>
+    <string name="value_none_today">Bugün yok</string>
+    <string name="label_sun_now">Güneşe göre kıble</string>
+    <string name="value_qibla_right_of_sun">Güneşin %1$d° sağında</string>
+    <string name="value_qibla_left_of_sun">Güneşin %1$d° solunda</string>
+    <string name="note_sun_now">Güneş şu an %1$s yönünde. Kadrandaki turuncu nokta gerçek güneşi göstermiyorsa pusula yanılıyordur.</string>
+    <string name="value_sun_below">Güneş ufkun altında</string>
+    <string name="group_compass">Pusula</string>
+    <string name="label_declination">Manyetik sapma</string>
+    <string name="note_model">%1$s modeliyle cihazda hesaplandı; pusula buna göre düzeltilir.</string>
+    <string name="note_model_expired">%1$s modelinin süresi doldu; uygulamayı güncelleyin. Hata yine de küçüktür.</string>
+    <string name="label_calibration">Kalibrasyon</string>
+    <string name="label_environment">Manyetik ortam</string>
+    <string name="note_field">Ölçülen %1$s µT · beklenen %2$s µT</string>
+    <string name="label_heading_accuracy">Yön doğruluğu</string>
+    <string name="label_sensor">Sensör</string>
+    <string name="calibrate">Kalibre et</string>
+    <string name="group_screen">Ekran yönü</string>
+    <string name="label_screen_orientation">Ekran yönü</string>
+    <string name="value_flip_auto_normal">Otomatik · normal</string>
+    <string name="value_flip_auto_flipped">Otomatik · 180° çevrik</string>
+    <string name="value_flip_forced">Elle · 180° çevrik</string>
+    <string name="value_flip_normal">Elle · normal</string>
+    <string name="note_flip">Saati düğmeler solda takıyorsanız ekran ters döner. Kıble oku güneşe göre tutarsızsa buradan değiştirin.</string>
+    <string name="group_about">Hakkında</string>
+    <string name="attribution">İlçe koordinatları: GeoNames (CC BY 4.0, filtrelenip Wikidata ile birleştirildi), Wikidata (CC0), OpenStreetMap ile doğrulandı. Manyetik model: NOAA NCEI / BGS World Magnetic Model 2025 (kamu malı).</string>
+
+    <!-- Değerler -->
+    <string name="value_unknown">Bilinmiyor</string>
+    <string name="value_none">Yok</string>
+    <string name="value_accuracy_high">Yüksek</string>
+    <string name="value_accuracy_medium">Orta</string>
+    <string name="value_accuracy_low">Düşük</string>
+    <string name="value_accuracy_unreliable">Güvenilmez</string>
+    <string name="value_quality_good">İyi</string>
+    <string name="value_quality_suspect">Şüpheli</string>
+    <string name="value_quality_bad">Parazit var</string>
+    <string name="value_quality_calibrate">Kalibrasyon gerekli</string>
+    <string name="value_sensor_rotation_vector">Dönüş vektörü (jiroskop + manyetometre)</string>
+    <string name="value_sensor_geomagnetic">Jeomanyetik dönüş vektörü</string>
+    <string name="value_sensor_accel_mag">İvmeölçer + manyetometre</string>
+
+    <!-- Konum sayfası -->
+    <string name="page_location">Konum</string>
+    <string name="label_current_location">Kullanılan konum</string>
+    <string name="note_mode_auto">Otomatik: saatin GPS\'i, yoksa son bilinen konum.</string>
+    <string name="note_mode_manual">Elle seçildi: ilçe merkezinin koordinatı kullanılıyor.</string>
+    <string name="label_gps">Saat GPS\'i</string>
+    <string name="gps_idle">Beklemede</string>
+    <string name="gps_no_permission">İzin verilmedi</string>
+    <string name="note_gps_permission">İl/ilçe seçerek devam edebilirsiniz.</string>
+    <string name="gps_off">Konum kapalı</string>
+    <string name="note_gps_off">Hızlı ayarlardan konumu açın; güç tasarrufu modu da GPS\'i kapatabilir.</string>
+    <string name="gps_no_hardware">Bu saatte GPS yok</string>
+    <string name="gps_searching">Uydu aranıyor · %1$d sn</string>
+    <string name="note_satellites">Kullanılan uydu: %1$d / %2$d</string>
+    <string name="gps_timeout">Konum bulunamadı</string>
+    <string name="note_gps_timeout">Açık havada, bileğiniz yukarı bakarken tekrar deneyin.</string>
+    <string name="label_gps_check">GPS doğrulaması</string>
+    <string name="value_gps_check">İlçeye %1$s · fark %2$s</string>
+    <string name="note_gps_check_ok">Seçili ilçe konumunuzla uyumlu.</string>
+    <string name="note_gps_check_far">Seçili ilçeden uzaktasınız; otomatik konuma geçmeniz önerilir.</string>
+    <string name="use_gps">Saat GPS\'iyle bul</string>
+    <string name="stop_gps">Aramayı durdur</string>
+    <string name="pick_city">İl / ilçe seç</string>
+    <string name="use_automatic">Otomatik konuma dön</string>
+    <string name="note_gps_tip">İnternet ve telefon gerekmez. Saat uzun süre telefondan ayrı kaldıysa ilk konum birkaç dakika sürebilir.</string>
+    <string name="pick_province">İl seçin</string>
+
+    <!-- Kalibrasyon -->
+    <string name="calibration_instructions">Saati havada sekiz çizerek her yöne çevirin. Metal ve mıknatıslardan uzak durun.</string>
+    <string name="calibration_done">Kalibrasyon tamam</string>
+    <string name="done">Bitti</string>
+</resources>

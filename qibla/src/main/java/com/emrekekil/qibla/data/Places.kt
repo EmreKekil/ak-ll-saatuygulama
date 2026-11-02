@@ -84,3 +84,15 @@ class PlaceTable(val districts: List<District>) {
         }
     }
 }
+
+/** Uygulamaya gömülü tablo süreç boyunca bir kez okunur (arayüz ve arka plan işleri paylaşır). */
+object PlaceStore {
+    @Volatile private var table: PlaceTable? = null
+
+    fun get(context: android.content.Context): PlaceTable =
+        table ?: synchronized(this) {
+            table ?: PlaceTable.parse(
+                context.applicationContext.assets.open("tr_districts.csv").bufferedReader().use { it.readText() },
+            ).also { table = it }
+        }
+}

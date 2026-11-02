@@ -8,6 +8,12 @@ import com.emrekekil.qibla.geo.LatLon
 import com.emrekekil.qibla.geo.MagneticField
 import com.emrekekil.qibla.geo.Qibla
 import com.emrekekil.qibla.geo.WorldMagneticModel
+import com.emrekekil.qibla.notify.PrayerAlarms
+import com.emrekekil.qibla.notify.PrayerWork
+import com.emrekekil.qibla.prayer.AlertSetting
+import com.emrekekil.qibla.prayer.DayTimes
+import com.emrekekil.qibla.prayer.Prayer
+import com.emrekekil.qibla.prayer.PrayerEngine
 import com.emrekekil.qibla.geo.decimalYear
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -102,55 +108,139 @@ class QiblaViewModel(application: Application) : AndroidViewModel(application) {
 
     private var gpsJob: Job? = null
 
+    // ---------------------------------------------------------------- Ezan vakitleri
+
+    private val prayerEngine = PrayerEngine(application)
+
+    private val _prayer = MutableStateFlow<PrayerState?>(null)
+    val prayer: StateFlow<PrayerState?> = _prayer.asStateFlow()
+
+    private val _alerts = MutableStateFlow<Map<Prayer, AlertSetting>>(emptyMap())
+    val alerts: StateFlow<Map<Prayer, AlertSetting>> = _alerts.asStateFlow()
+
     init {
         viewModelScope.launch {
             val (table, wmm) = withContext(Dispatchers.IO) {
-                val assets = application.assets
-                val table = PlaceTable.parse(assets.open("tr_districts.csv").bufferedReader().use { it.readText() })
-                val wmm = WorldMagneticModel.parse(assets.open("WMM.COF").bufferedReader().use { it.readText() })
-                table to wmm
+                val wmm = application.assets.open("WMM.COF").bufferedReader().use { it.readText() }
+                PlaceStore.get(application) to WorldMagneticModel.parse(wmm)
             }
             model = wmm
             _places.value = table
             _manual.value = settings.manualDistrict?.let { (plate, name) -> table.find(plate, name) }
-            _lastKnown.value = withContext(Dispatchers.IO) { locations.bestKnown() }
+            val lastKnown = withContext(Dispatchers.IO) { locations.bestKnown() }
+            _lastKnown.value = lastKnown
             _loaded.value = true
+            withContext(Dispatchers.IO) {
+                lastKnown?.let { prayerEngine.onPosition(it.location) }
+                PrayerWork.ensureScheduled(application)
+                if (prayerEngine.needsRefresh()) PrayerWork.requestSync(application)
+                PrayerAlarms.schedule(application)
+            }
+            reloadPrayer()
         }
+    }
+
+    /** Vakitleri ve etkin konumu yeniden okur (gün değişince, konum ya da veri güncellenince). */
+    fun reloadPrayer() {
+        viewModelScope.launch {
+            _prayer.value = withContext(Dispatchers.IO) {
+                val home = prayerEngine.home()
+                val active = prayerEngine.active()
+                PrayerState(home = home, active = active, days = prayerEngine.daysAround())
+            }
+            _alerts.value = prayerEngine.settings.alerts()
+        }
+    }
+
+    private fun onNewPosition(fix: Fix) {
+        viewModelScope.launch(Dispatchers.IO) {
+            if (prayerEngine.onPosition(fix.location)) {
+                if (prayerEngine.needsRefresh()) PrayerWork.requestSync(getApplication())
+                PrayerAlarms.schedule(getApplication())
+                reloadPrayer()
+            }
+        }
+    }
+
+    fun setHome(district: District) {
+        viewModelScope.launch(Dispatchers.IO) {
+            prayerEngine.setHome(district)
+            _lastKnown.value?.let { prayerEngine.onPosition(it.location) }
+            if (prayerEngine.needsRefresh()) PrayerWork.requestSync(getApplication())
+            PrayerAlarms.schedule(getApplication())
+            reloadPrayer()
+        }
+    }
+
+    fun setAlert(prayer: Prayer, setting: AlertSetting) {
+        prayerEngine.settings.setAlert(prayer, setting)
+        _alerts.value = _alerts.value + (prayer to setting)
+        viewModelScope.launch(Dispatchers.IO) { PrayerAlarms.schedule(getApplication()) }
+    }
+
+    /** Bildirim izni bir kez istenir; reddedilirse tekrar sorulmaz. */
+    fun shouldAskNotificationPermission(): Boolean = !prayerEngine.settings.notificationPermissionAsked
+
+    fun onNotificationPermissionAsked() {
+        prayerEngine.settings.notificationPermissionAsked = true
     }
 
     val hasLocationPermission: Boolean get() = locations.hasAnyPermission()
 
+    private val _userSearch = MutableStateFlow(false)
+
+    /** GPS araması kullanıcı tarafından mı başlatıldı? Yalnızca o zaman ekran açık tutulur. */
+    val userSearch: StateFlow<Boolean> = _userSearch.asStateFlow()
+
     /** Saatin GNSS alıcısıyla konum aramaya başlar (zaten sürüyorsa bir şey yapmaz). */
-    fun startGps() {
+    fun startGps(userInitiated: Boolean = true) {
+        if (userInitiated) _userSearch.value = true
         if (gpsJob?.isActive == true) return
         gpsJob = viewModelScope.launch {
-            locations.acquire().collect { state ->
+            // Otomatik arama kısa tutulur: bulunamazsa son bilinen konumla devam edilir.
+            val flow = if (userInitiated) locations.acquire() else locations.acquire(timeoutMs = 60_000, settleMs = 5_000)
+            flow.collect { state ->
                 _gps.value = state
                 if (state is GpsState.Fixed) _lastKnown.value = state.fix
             }
             // Zaman aşımı veya iyi konumla bittiğinde son durum ekranda kalır.
+            _userSearch.value = false
+            (_gps.value as? GpsState.Fixed)?.let { onNewPosition(it.fix) }
         }
     }
 
     fun stopGps() {
         gpsJob?.cancel()
         gpsJob = null
+        _userSearch.value = false
         val state = _gps.value
         if (state is GpsState.Searching) _gps.value = GpsState.Idle
     }
 
     /**
-     * Uygulama ön plana geldiğinde: otomatik modda ve izin varsa konumu tazele. Ayarlar doğrudan
-     * okunur, çünkü bu çağrı tablo yüklenmeden önce gelebilir.
+     * Uygulama ön plana geldiğinde. Uygulama günde birçok kez açıldığı için GPS her açılışta
+     * çalıştırılmaz: önce donanımı çalıştırmayan son bilinen konuma bakılır, GPS yalnızca bilinen
+     * konum [GPS_AFTER_MS]'den eskiyse arka planda (ekranı açık tutmadan) kısa süre çalışır.
      */
     fun onForeground() {
-        if (settings.manualDistrict != null || !locations.hasAnyPermission()) return
-        val fixed = _gps.value as? GpsState.Fixed
-        if (fixed == null || System.currentTimeMillis() - fixed.fix.utcMillis > REFRESH_AFTER_MS) startGps()
+        reloadPrayer()
+        if (!locations.hasAnyPermission()) return
+        viewModelScope.launch {
+            val known = withContext(Dispatchers.IO) { locations.bestKnown() }
+            if (known != null) {
+                _lastKnown.value = known
+                onNewPosition(known)
+            }
+            val fresh = known != null && System.currentTimeMillis() - known.utcMillis < GPS_AFTER_MS
+            if (settings.manualDistrict == null && !fresh) startGps(userInitiated = false)
+        }
     }
 
     fun onPermissionResult() {
-        _lastKnown.value = locations.bestKnown()
+        locations.bestKnown()?.let {
+            _lastKnown.value = it
+            onNewPosition(it)
+        }
         startGps()
     }
 
@@ -193,9 +283,14 @@ class QiblaViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private companion object {
-        /** Bu süreden eski bir GPS konumu, uygulama yeniden açıldığında tazelenir. */
-        const val REFRESH_AFTER_MS = 15 * 60_000L
+        /** Bilinen konum bundan eskiyse açılışta GPS kısa süre çalıştırılır. */
+        const val GPS_AFTER_MS = 6 * 60 * 60_000L
     }
+}
+
+/** Ezan vakti sayfasının durumu. */
+data class PrayerState(val home: District, val active: District, val days: List<DayTimes>) {
+    val isTemporary: Boolean get() = active != home
 }
 
 /** Elle seçilen ilçe ile GPS konumunun karşılaştırması. */

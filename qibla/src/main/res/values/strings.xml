@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">Kıble</string>
+    <string name="app_name">Ezan Vakti ve Kıble</string>
 
     <!-- Kuzey, Doğu, Güney, Batı -->
     <string-array name="cardinals">
@@ -122,4 +122,36 @@
     <string name="calibration_instructions">Saati havada sekiz çizerek her yöne çevirin. Metal ve mıknatıslardan uzak durun.</string>
     <string name="calibration_done">Kalibrasyon tamam</string>
     <string name="done">Bitti</string>
+
+    <!-- Ezan vakitleri -->
+    <string-array name="prayer_names">
+        <item>İmsak</item>
+        <item>Güneş</item>
+        <item>Öğle</item>
+        <item>İkindi</item>
+        <item>Akşam</item>
+        <item>Yatsı</item>
+    </string-array>
+    <string name="prayer_sabah">Sabah namazı</string>
+    <string name="prayer_until">%1$s vaktine</string>
+    <string name="prayer_temporary">%1$s · geçici</string>
+    <string name="prayer_source_diyanet">Diyanet</string>
+    <string name="prayer_source_calculated">Hesaplandı</string>
+    <string name="prayer_loading">Vakitler hazırlanıyor…</string>
+    <string name="notif_channel">Ezan vakitleri</string>
+    <string name="notif_entry_title">%1$s vakti</string>
+    <string name="notif_entry_text">Vakit girdi · %1$s</string>
+    <string name="notif_warn_title">%1$s vaktinin çıkmasına %2$d dk</string>
+    <string name="notif_warn_text">%1$s %2$s</string>
+    <string name="alerts_title">Bildirimler</string>
+    <string name="alert_entry">Vakit girince</string>
+    <string name="alert_before_end">Çıkmadan önce</string>
+    <string name="alert_minutes">%1$d dk önce</string>
+    <string name="alert_off">Kapalı</string>
+    <string name="open_alerts">Bildirim ayarları</string>
+    <string name="label_prayer_location">Ezan vakti konumu</string>
+    <string name="note_prayer_home">Ana konum. Başka bir şehirdeyken o şehrin vakitleri geçici olarak kullanılır.</string>
+    <string name="note_prayer_temporary">Ana konumunuz %1$s; şu an bulunduğunuz yerin vakitleri kullanılıyor.</string>
+    <string name="pick_home">Ana konumu değiştir</string>
+    <string name="note_prayer_offline">Vakitler telefon (Bluetooth) veya Wi-Fi üzerinden Diyanet\'ten günde en fazla bir kez indirilir; bağlantı yoksa saatte hesaplanır.</string>
 </resources>

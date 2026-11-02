@@ -1,7 +1,35 @@
-# Kıble Pusulası
+# Ezan Vakti ve Kıble
 
-Samsung Galaxy Watch Ultra 2 (Wear OS) için internetsiz, saatin kendi pusulası ve GPS'iyle çalışan
-kıble bulucu.
+Samsung Galaxy Watch Ultra 2 (Wear OS) için ezan vakitleri ve internetsiz kıble bulucu.
+
+## Ezan vakitleri
+
+Uygulama vakitler sayfasıyla açılır: ortada bir sonraki vakte kalan süre, dış halkada şimdiki vaktin
+ne kadarının geçtiği, altta günün altı vakti. Soldan sağa kaydırınca kıble pusulası açılır.
+
+- **Kaynak:** Diyanet vakitleri, saat telefona (Bluetooth) veya Wi-Fi'ye bağlıyken
+  ezanvakti.emushaf.net'ten ilçe başına 32 günlük olarak indirilip saatte saklanır; veri 10 günün
+  altına inince yenilenir. Bağlantı yoksa vakitler saatte **Diyanet yöntemiyle hesaplanır**
+  (İmsak 18°, Yatsı 17°, temkinler: Güneş −7, Öğle +5, İkindi +4, Akşam +7 dk). Hesap, 10 il × 32
+  günlük Diyanet verisinin hepsinde en fazla 1 dakika farklıdır.
+- **Konum:** Ana konum varsayılan olarak Ankara merkezdir (Konum sayfasından değiştirilebilir).
+  Bulunduğunuz yer ana konumdan 20 km'den uzak ve farklı bir Diyanet bölgesindeyse oranın vakitleri
+  geçici olarak kullanılır; dönünce ana konuma geçilir. Konum, uygulama açılınca ve günde bir kez
+  arka planda sistemin son bilinen konumundan kontrol edilir (ek izin istenmez).
+- **Bildirimler:** Her vakit için "vakit girince" ve "çıkmadan önce" bildirimi ayrı ayrı açılıp
+  kapatılır; uyarı süresi 15–120 dk arasında seçilir (vakitler sayfasında sayaca dokunun).
+
+## Pil
+
+Saat pili için uygulamada bilinçli tercihler:
+
+- Aynı anda yalnızca **bir alarm** kuruludur (günde en fazla ~10 uyanma); arka plan işi günde bir
+  kezdir ve indirme yalnızca veri azaldığında, ağ varken yapılır.
+- Geri sayım yalnızca vakitler sayfası görünür ve ekran açıkken saniyede bir güncellenir.
+- Pusula sensörleri yalnızca pusula sayfasında ve ekran açıkken, 25 Hz'de çalışır; ekran en fazla
+  2 dk açık tutulur.
+- GPS her açılışta çalışmaz: bilinen konum 6 saatten eskiyse en fazla 1 dk, ekranı açık tutmadan
+  arar; 100 m doğrulukta durur.
 
 ## Nasıl çalışır
 
@@ -70,7 +98,10 @@ Android Studio'da saat bağlıysa doğrudan **Run** ile de yükleyebilirsiniz.
 qibla/src/main/java/com/emrekekil/qibla/
   geo/      # kıble formülü, WMM2025, güneş konumu (saf Kotlin, birim testli)
   sensor/   # pusula sensörleri, ekran yönü, manyetik parazit, titreşim
+  prayer/   # ezan vakitleri: Diyanet verisi, çevrimdışı hesap, bildirim planı
+  notify/   # alarm, bildirim ve günlük arka plan işi
   data/     # konum (GPS), il/ilçe tablosu, ayarlar, ViewModel
   ui/       # pusula, ayrıntılar, konum, il/ilçe seçimi, kalibrasyon
-qibla/src/main/assets/   # WMM.COF ve tr_districts.csv
+qibla/src/main/assets/   # WMM.COF ve tr_districts.csv (Diyanet kimlikleriyle)
+qibla/tools/             # Diyanet ilçe eşlemesini üreten betik
 ```

@@ -1,11 +1,13 @@
 package com.emrekekil.qibla.ui
 
 import android.Manifest
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -31,21 +33,32 @@ import com.emrekekil.qibla.ui.details.DetailsPage
 import com.emrekekil.qibla.ui.location.DistrictListScreen
 import com.emrekekil.qibla.ui.location.LocationPage
 import com.emrekekil.qibla.ui.location.ProvinceListScreen
+import com.emrekekil.qibla.ui.prayer.AlertSettingsScreen
+import com.emrekekil.qibla.ui.prayer.PrayerPage
 import com.emrekekil.qibla.ui.theme.QiblaTheme
 import kotlinx.coroutines.launch
 
 private object Routes {
     const val MAIN = "main"
-    const val PROVINCES = "provinces"
-    const val DISTRICTS = "districts/{plate}"
+    const val PROVINCES = "provinces/{target}"
+    const val DISTRICTS = "districts/{target}/{plate}"
     const val CALIBRATION = "calibration"
+    const val ALERTS = "alerts"
 
-    fun districts(plate: Int) = "districts/$plate"
+    /** İl/ilçe seçiminin amacı: kıble için konum veya ezan vakti ana konumu. */
+    const val TARGET_QIBLA = "qibla"
+    const val TARGET_HOME = "home"
+
+    fun provinces(target: String) = "provinces/$target"
+    fun districts(target: String, plate: Int) = "districts/$target/$plate"
 }
 
+// Vakitler açılış sayfasıdır; soldan sağa kaydırınca kıble pusulası gelir.
 private const val PAGE_COMPASS = 0
-private const val PAGE_DETAILS = 1
-private const val PAGE_LOCATION = 2
+private const val PAGE_PRAYER = 1
+private const val PAGE_DETAILS = 2
+private const val PAGE_LOCATION = 3
+private const val PAGE_COUNT = 4
 
 @Composable
 fun QiblaApp(vm: QiblaViewModel = viewModel()) {
@@ -55,7 +68,19 @@ fun QiblaApp(vm: QiblaViewModel = viewModel()) {
     val gps by vm.gps.collectAsStateWithLifecycle()
     val gpsCheck by vm.gpsCheck.collectAsStateWithLifecycle()
     val flipOverride by vm.flipOverride.collectAsStateWithLifecycle()
+    val prayer by vm.prayer.collectAsStateWithLifecycle()
+    val alerts by vm.alerts.collectAsStateWithLifecycle()
+    val userSearch by vm.userSearch.collectAsStateWithLifecycle()
     val displayOn = rememberDisplayOn()
+
+    // Bildirim izni (Android 13+) ilk açılışta bir kez istenir.
+    val notificationLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { }
+    LaunchedEffect(Unit) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && vm.shouldAskNotificationPermission()) {
+            vm.onNotificationPermissionAsked()
+            notificationLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
 
     // Uygulama görünür olunca otomatik modda GPS'i tazele; arka plana geçince GNSS'i durdur.
     LifecycleStartEffect(vm) {
@@ -77,14 +102,17 @@ fun QiblaApp(vm: QiblaViewModel = viewModel()) {
     QiblaTheme {
         AppScaffold {
             val navController = rememberSwipeDismissableNavController()
-            // Soğuk GPS başlangıcı dakikalar sürebilir; arama sürerken ekran kapanırsa arama durur.
-            Box(Modifier.fillMaxSize().then(if (gps is GpsState.Searching) Modifier.keepScreenOn() else Modifier)) {
+            // Kullanıcının başlattığı GPS araması sürerken ekran açık kalır (kapanırsa arama durur).
+            // Açılıştaki otomatik arama ekranı açık tutmaz; pil için.
+            val keepOn = userSearch && gps is GpsState.Searching
+            Box(Modifier.fillMaxSize().then(if (keepOn) Modifier.keepScreenOn() else Modifier)) {
                 SwipeDismissableNavHost(navController = navController, startDestination = Routes.MAIN) {
                     composable(Routes.MAIN) {
-                        val pagerState = rememberPagerState(pageCount = { 3 })
+                        val pagerState = rememberPagerState(initialPage = PAGE_PRAYER, pageCount = { PAGE_COUNT })
                         val scope = rememberCoroutineScope()
+                        // Sensörler yalnızca pusula sayfası görünür ve ekran açıkken çalışır.
                         val compass = rememberCompassState(
-                            active = displayOn && pagerState.currentPage != PAGE_LOCATION,
+                            active = displayOn && pagerState.currentPage == PAGE_COMPASS,
                             expectedField = info?.magneticField,
                             flipOverride = flipOverride,
                             alignTarget = info?.magneticBearing,
@@ -100,6 +128,12 @@ fun QiblaApp(vm: QiblaViewModel = viewModel()) {
                                             onCalibrate = { navController.navigate(Routes.CALIBRATION) },
                                             onOpenLocation = { scope.launch { pagerState.animateScrollToPage(PAGE_LOCATION) } },
                                         )
+                                        PAGE_PRAYER -> PrayerPage(
+                                            state = prayer,
+                                            active = displayOn && pagerState.currentPage == PAGE_PRAYER,
+                                            onDayChanged = vm::reloadPrayer,
+                                            onOpenAlerts = { navController.navigate(Routes.ALERTS) },
+                                        )
                                         PAGE_DETAILS -> DetailsPage(
                                             info = info,
                                             compass = compass,
@@ -114,27 +148,35 @@ fun QiblaApp(vm: QiblaViewModel = viewModel()) {
                                             gpsCheck = gpsCheck,
                                             onUseGps = useGps,
                                             onStopGps = vm::stopGps,
-                                            onPickCity = { navController.navigate(Routes.PROVINCES) },
+                                            onPickCity = { navController.navigate(Routes.provinces(Routes.TARGET_QIBLA)) },
                                             onUseAutomatic = vm::useAutomaticLocation,
+                                            prayer = prayer,
+                                            onPickHome = { navController.navigate(Routes.provinces(Routes.TARGET_HOME)) },
+                                            onOpenAlerts = { navController.navigate(Routes.ALERTS) },
                                         )
                                     }
                                 }
                             }
                         }
                     }
-                    composable(Routes.PROVINCES) {
+                    composable(Routes.PROVINCES) { entry ->
+                        val target = entry.arguments?.getString("target") ?: Routes.TARGET_QIBLA
                         places?.let { table ->
-                            ProvinceListScreen(table) { plate -> navController.navigate(Routes.districts(plate)) }
+                            ProvinceListScreen(table) { plate -> navController.navigate(Routes.districts(target, plate)) }
                         }
                     }
                     composable(Routes.DISTRICTS) { entry ->
+                        val target = entry.arguments?.getString("target") ?: Routes.TARGET_QIBLA
                         val plate = entry.arguments?.getString("plate")?.toIntOrNull() ?: 0
                         places?.let { table ->
                             DistrictListScreen(table, plate) { district ->
-                                vm.selectDistrict(district)
+                                if (target == Routes.TARGET_HOME) vm.setHome(district) else vm.selectDistrict(district)
                                 navController.popBackStack(Routes.MAIN, inclusive = false)
                             }
                         }
+                    }
+                    composable(Routes.ALERTS) {
+                        AlertSettingsScreen(alerts, vm::setAlert)
                     }
                     composable(Routes.CALIBRATION) {
                         val compass = rememberCompassState(

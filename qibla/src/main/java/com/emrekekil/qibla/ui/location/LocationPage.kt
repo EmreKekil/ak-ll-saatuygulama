@@ -18,6 +18,7 @@ import com.emrekekil.qibla.R
 import com.emrekekil.qibla.data.District
 import com.emrekekil.qibla.data.GpsCheck
 import com.emrekekil.qibla.data.GpsState
+import com.emrekekil.qibla.data.PrayerState
 import com.emrekekil.qibla.data.QiblaInfo
 import com.emrekekil.qibla.ui.Labels
 import com.emrekekil.qibla.ui.components.ListPage
@@ -38,11 +39,46 @@ fun LocationPage(
     onStopGps: () -> Unit,
     onPickCity: () -> Unit,
     onUseAutomatic: () -> Unit,
+    prayer: PrayerState?,
+    onPickHome: () -> Unit,
+    onOpenAlerts: () -> Unit,
 ) {
     val res = LocalResources.current
     val errorColor = MaterialTheme.colorScheme.error
     val okColor = MaterialTheme.colorScheme.primary
     ListPage(stringResource(R.string.page_location)) { spec ->
+        // Ezan vakti konumu: ana konum ve (uzaktaysanız) geçici konum.
+        if (prayer != null) {
+            infoItem(
+                "prayer_location", res.getString(R.string.label_prayer_location),
+                if (prayer.isTemporary) res.getString(R.string.prayer_temporary, prayer.active.displayName) else prayer.home.displayName,
+                spec,
+                note = if (prayer.isTemporary) {
+                    res.getString(R.string.note_prayer_temporary, prayer.home.displayName)
+                } else {
+                    res.getString(R.string.note_prayer_home)
+                },
+            )
+        }
+        item(key = "home") {
+            FilledTonalButton(
+                onClick = onPickHome,
+                modifier = Modifier.fillMaxWidth().transformedHeight(this, spec),
+                transformation = SurfaceTransformation(spec),
+                label = { Text(stringResource(R.string.pick_home)) },
+                secondaryLabel = prayer?.let { { Text(it.home.displayName) } },
+            )
+        }
+        item(key = "alerts") {
+            FilledTonalButton(
+                onClick = onOpenAlerts,
+                modifier = Modifier.fillMaxWidth().transformedHeight(this, spec),
+                transformation = SurfaceTransformation(spec),
+                label = { Text(stringResource(R.string.open_alerts)) },
+            )
+        }
+        note("prayer_note", res.getString(R.string.note_prayer_offline))
+
         infoItem(
             "current", res.getString(R.string.label_current_location),
             info?.let { Labels.source(res, it) } ?: res.getString(R.string.value_none), spec,

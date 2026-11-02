@@ -119,7 +119,8 @@ class LocationRepository(context: Context) {
     @SuppressLint("MissingPermission")
     fun acquire(
         timeoutMs: Long = 180_000,
-        goodAccuracyM: Float = 50f,
+        // Kıble ve vakit için 100 m fazlasıyla yeterli; daha iyisini beklemek GNSS'i boşuna çalıştırır.
+        goodAccuracyM: Float = 100f,
         settleMs: Long = 10_000,
     ): Flow<GpsState> = callbackFlow {
         when {

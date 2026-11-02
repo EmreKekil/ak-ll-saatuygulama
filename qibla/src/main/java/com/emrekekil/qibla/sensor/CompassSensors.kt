@@ -91,10 +91,11 @@ class CompassSensors(
             HeadingSource.GRAVITY_MAG -> gravity
             HeadingSource.ACCEL_MAG -> accelerometer
         }
-        // 50 Hz, toplu iletim (batching) yok: arayüz canlı.
-        sensorManager.registerListener(this, headingSensor, 20_000, 0, handler)
+        // 25 Hz yön ve 10 Hz manyetometre: yumuşatmayla akıcı görünür; daha yüksek hız yalnızca
+        // işlemciyi ve pili yorar. Toplu iletim (batching) yok, çünkü arayüz canlı.
+        sensorManager.registerListener(this, headingSensor, HEADING_PERIOD_US, 0, handler)
         magnetometer?.let {
-            sensorManager.registerListener(this, it, if (usesRawMagnetometer) 20_000 else 66_667, 0, handler)
+            sensorManager.registerListener(this, it, if (usesRawMagnetometer) HEADING_PERIOD_US else MAG_PERIOD_US, 0, handler)
         }
         return true
     }
@@ -200,5 +201,10 @@ class CompassSensors(
         val vertical = x * upX + y * upY + z * upZ
         val horizontal = sqrt((field * field - vertical * vertical).coerceAtLeast(0f))
         return Math.toDegrees(atan2(-vertical, horizontal).toDouble())
+    }
+
+    private companion object {
+        const val HEADING_PERIOD_US = 40_000
+        const val MAG_PERIOD_US = 100_000
     }
 }

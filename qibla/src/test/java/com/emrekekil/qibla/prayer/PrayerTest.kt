@@ -90,3 +90,76 @@ class PrayerScheduleTest {
         assertEquals(Prayer.AKSAM, moment.next)
     }
 }
+
+class AlarmPlannerTest {
+
+    private val d = LocalDate.of(2026, 11, 2)
+    private fun t(h: Int, m: Int) = LocalTime.of(h, m)
+    private fun day(date: LocalDate) = DayTimes(
+        date,
+        mapOf(
+            Prayer.IMSAK to t(5, 47), Prayer.GUNES to t(7, 11), Prayer.OGLE to t(12, 37),
+            Prayer.IKINDI to t(15, 26), Prayer.AKSAM to t(17, 53), Prayer.YATSI to t(19, 13),
+        ),
+        null,
+        TimesSource.DIYANET,
+    )
+    private val days = listOf(day(d.minusDays(1)), day(d), day(d.plusDays(1)))
+    private val defaults = PrayerSettings.DEFAULTS
+
+    @Test
+    fun nextIsWarningBeforeIkindi() {
+        val next = AlarmPlanner.next(days, defaults, LocalDateTime.of(d, t(13, 0)))!!
+        // Öğle 15:26'da çıkar; 60 dk önce 14:26.
+        assertEquals(LocalDateTime.of(d, t(14, 26)), next.time)
+        assertEquals(Prayer.OGLE, next.prayer)
+        assertEquals(PlannedAlert.Kind.BEFORE_END, next.kind)
+        assertEquals(LocalDateTime.of(d, t(15, 26)), next.endsAt)
+    }
+
+    @Test
+    fun sabahWarningIsBeforeSunrise() {
+        val next = AlarmPlanner.next(days, defaults, LocalDateTime.of(d, t(5, 50)))!!
+        assertEquals(LocalDateTime.of(d, t(6, 11)), next.time)
+        assertEquals(Prayer.IMSAK, next.prayer)
+    }
+
+    @Test
+    fun respectsDisabledAlertsAndCustomMinutes() {
+        val alerts = defaults + (Prayer.OGLE to AlertSetting(onEntry = false, beforeEnd = true, warningMinutes = 30)) +
+            (Prayer.IKINDI to AlertSetting(onEntry = false, beforeEnd = false, warningMinutes = 60))
+        val next = AlarmPlanner.next(days, alerts, LocalDateTime.of(d, t(12, 0)))!!
+        assertEquals(LocalDateTime.of(d, t(14, 56)), next.time)
+        val after = AlarmPlanner.next(days, alerts, next.time)!!
+        // İkindi'nin hem girişi hem uyarısı kapalı: sıradaki bildirim Akşam girişi.
+        assertEquals(LocalDateTime.of(d, t(17, 53)), after.time)
+        assertEquals(PlannedAlert.Kind.ENTRY, after.kind)
+    }
+
+    @Test
+    fun yatsiWarningCrossesMidnightWhenEnabled() {
+        val alerts = defaults + (Prayer.YATSI to AlertSetting(onEntry = true, beforeEnd = true, warningMinutes = 60))
+        val next = AlarmPlanner.next(days, alerts, LocalDateTime.of(d, t(23, 0)))!!
+        assertEquals(LocalDateTime.of(d.plusDays(1), t(4, 47)), next.time)
+        assertEquals(Prayer.YATSI, next.prayer)
+    }
+}
+
+class PrayerLocationTest {
+
+    private val places = PlaceTable.parse(TestData.asset("tr_districts.csv"))
+    private val ankara = places.find(6, "Altındağ")!!
+
+    @Test
+    fun staysHomeInsideAnkaraCity() {
+        // Çankaya: aynı Diyanet bölgesi.
+        assertEquals(null, PrayerLocation.temporaryFor(ankara, places.find(6, "Çankaya")!!.location, places))
+    }
+
+    @Test
+    fun switchesToOtherCity() {
+        val konya = places.find(42, "Selçuklu")!!.location
+        val temp = PrayerLocation.temporaryFor(ankara, konya, places)!!
+        assertEquals("Konya", temp.province)
+    }
+}

@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Sade Dijital: büyük iki renkli saat, Türkçe tarih, pil, saniye halkası ve iki komplikasyon yuvası.
+    Üstteki geniş yuva varsayılan olarak "Ezan Vakti ve Kıble" uygulamasının "Sonraki vakit"
+    verisini gösterir; uygulama yüklü değilse saatin gün doğumu/batımı verisi kullanılır.
+    Ortam modunda (AOD) dolgu ve saniye halkası gizlenir, saat ince yazılır.
+-->
+<WatchFace width="450" height="450">
+    <Metadata key="CLOCK_TYPE" value="DIGITAL" />
+    <Metadata key="PREVIEW_TIME" value="10:08:32" />
+
+    <UserConfigurations>
+        <!-- colors: vurgu, yuva zemini -->
+        <ColorConfiguration id="theme" displayName="theme_label" defaultValue="0">
+            <ColorOption id="0" displayName="theme_green" colors="#FF7DD8A8 #FF16301F" />
+            <ColorOption id="1" displayName="theme_blue" colors="#FF8CCDFF #FF132D40" />
+            <ColorOption id="2" displayName="theme_gold" colors="#FFE9C46A #FF392D0E" />
+            <ColorOption id="3" displayName="theme_white" colors="#FFFFFFFF #FF2A2A2A" />
+        </ColorConfiguration>
+    </UserConfigurations>
+
+    <Scene backgroundColor="#FF000000">
+        <!-- Saniye halkası -->
+        <PartDraw x="0" y="0" width="450" height="450" name="seconds_ring">
+            <Variant mode="AMBIENT" target="alpha" value="0" />
+            <Arc centerX="225" centerY="225" width="432" height="432" startAngle="0" endAngle="360">
+                <Stroke color="#FF1C1C1C" thickness="6" />
+            </Arc>
+            <Arc centerX="225" centerY="225" width="432" height="432" startAngle="0" endAngle="0">
+                <Transform target="endAngle" value="([SECOND] + 1) * 6" />
+                <Stroke color="[CONFIGURATION.theme.0]" thickness="6" cap="ROUND" />
+            </Arc>
+        </PartDraw>
+
+        <!-- Pil: küçük pil simgesi + yüzde -->
+        <Group x="190" y="52" width="70" height="28" name="battery">
+            <PartDraw x="0" y="6" width="26" height="16">
+                <RoundRectangle x="1" y="1" width="21" height="14" cornerRadiusX="3" cornerRadiusY="3">
+                    <Stroke color="#FF9A9A9A" thickness="2" />
+                </RoundRectangle>
+                <Rectangle x="23" y="5" width="3" height="6">
+                    <Fill color="#FF9A9A9A" />
+                </Rectangle>
+                <Rectangle x="3" y="3" width="17" height="10">
+                    <Transform target="width" value="17 * [BATTERY_PERCENT] / 100" />
+                    <Fill color="[CONFIGURATION.theme.0]" />
+                </Rectangle>
+            </PartDraw>
+            <PartText x="30" y="0" width="40" height="28">
+                <Text align="START">
+                    <Font family="SYNC_TO_DEVICE" size="22" weight="MEDIUM" color="#FF9A9A9A">
+                        <Template>%s<Parameter expression="[BATTERY_PERCENT]" /></Template>
+                    </Font>
+                </Text>
+            </PartText>
+        </Group>
+
+        <!-- Tarih: "Pzt 2 Kas" (saatin diline göre) -->
+        <PartText x="75" y="92" width="300" height="40" name="date">
+            <Text align="CENTER">
+                <Font family="SYNC_TO_DEVICE" size="28" weight="MEDIUM" color="#FFCFCFCF">
+                    <Template>%s %s %s<Parameter expression="[DAY_OF_WEEK_S]" /><Parameter expression="[DAY]" /><Parameter expression="[MONTH_S]" /></Template>
+                </Font>
+            </Text>
+        </PartText>
+
+        <!-- Saat: saat beyaz, dakika vurgu renginde; ortam modunda ince ve beyaz -->
+        <DigitalClock x="0" y="136" width="450" height="140">
+            <TimeText format="hh" hourFormat="SYNC_TO_DEVICE" align="END" x="10" y="0" width="200" height="140">
+                <Variant mode="AMBIENT" target="alpha" value="0" />
+                <Font family="SYNC_TO_DEVICE" size="132" weight="SEMI_BOLD" color="#FFFFFFFF" />
+            </TimeText>
+            <TimeText format="mm" align="START" x="240" y="0" width="200" height="140">
+                <Variant mode="AMBIENT" target="alpha" value="0" />
+                <Font family="SYNC_TO_DEVICE" size="132" weight="SEMI_BOLD" color="[CONFIGURATION.theme.0]" />
+            </TimeText>
+            <TimeText format="hh" hourFormat="SYNC_TO_DEVICE" align="END" x="10" y="0" width="200" height="140" alpha="0">
+                <Variant mode="AMBIENT" target="alpha" value="255" />
+                <Font family="SYNC_TO_DEVICE" size="132" weight="THIN" color="#FFFFFFFF" />
+            </TimeText>
+            <TimeText format="mm" align="START" x="240" y="0" width="200" height="140" alpha="0">
+                <Variant mode="AMBIENT" target="alpha" value="255" />
+                <Font family="SYNC_TO_DEVICE" size="132" weight="THIN" color="#FFFFFFFF" />
+            </TimeText>
+        </DigitalClock>
+        <!-- Ayraç: iki nokta -->
+        <PartDraw x="215" y="170" width="20" height="80" name="colon">
+            <Ellipse x="3" y="16" width="14" height="14">
+                <Fill color="#FF6A6A6A" />
+            </Ellipse>
+            <Ellipse x="3" y="52" width="14" height="14">
+                <Fill color="#FF6A6A6A" />
+            </Ellipse>
+        </PartDraw>
+
+        <!-- Sonraki vakit (Ezan Vakti ve Kıble uygulaması) -->
+        <ComplicationSlot x="65" y="290" width="320" height="58" slotId="0" displayName="slot_prayer"
+            supportedTypes="LONG_TEXT SHORT_TEXT RANGED_VALUE EMPTY" isCustomizable="TRUE">
+            <DefaultProviderPolicy
+                defaultSystemProvider="SUNRISE_SUNSET" defaultSystemProviderType="SHORT_TEXT"
+                primaryProvider="com.emrekekil.qibla/com.emrekekil.qibla.surface.PrayerComplicationService"
+                primaryProviderType="LONG_TEXT" />
+            <BoundingRoundBox x="0" y="0" width="320" height="58" cornerRadius="29" />
+            <Complication type="LONG_TEXT">
+                <PartDraw x="0" y="0" width="320" height="58">
+                    <Variant mode="AMBIENT" target="alpha" value="0" />
+                    <RoundRectangle x="0" y="0" width="320" height="58" cornerRadiusX="29" cornerRadiusY="29">
+                        <Fill color="[CONFIGURATION.theme.1]" />
+                    </RoundRectangle>
+                </PartDraw>
+                <PartText x="18" y="0" width="284" height="58">
+                    <Text align="CENTER" ellipsis="TRUE">
+                        <Font family="SYNC_TO_DEVICE" size="25" weight="MEDIUM" color="#FFFFFFFF">
+                            <Template>%s<Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                        </Font>
+                    </Text>
+                </PartText>
+            </Complication>
+            <Complication type="SHORT_TEXT">
+                <PartDraw x="0" y="0" width="320" height="58">
+                    <Variant mode="AMBIENT" target="alpha" value="0" />
+                    <RoundRectangle x="0" y="0" width="320" height="58" cornerRadiusX="29" cornerRadiusY="29">
+                        <Fill color="[CONFIGURATION.theme.1]" />
+                    </RoundRectangle>
+                </PartDraw>
+                <Condition>
+                    <Expressions>
+                        <Expression name="hasTitle"><![CDATA[[COMPLICATION.TITLE] != null]]></Expression>
+                    </Expressions>
+                    <Compare expression="hasTitle">
+                        <PartText x="18" y="0" width="284" height="58">
+                            <Text align="CENTER" ellipsis="TRUE">
+                                <Font family="SYNC_TO_DEVICE" size="25" weight="MEDIUM" color="#FFFFFFFF">
+                                    <Template>%s · %s<Parameter expression="[COMPLICATION.TITLE]" /><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                                </Font>
+                            </Text>
+                        </PartText>
+                    </Compare>
+                    <Default>
+                        <PartText x="18" y="0" width="284" height="58">
+                            <Text align="CENTER" ellipsis="TRUE">
+                                <Font family="SYNC_TO_DEVICE" size="25" weight="MEDIUM" color="#FFFFFFFF">
+                                    <Template>%s<Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                                </Font>
+                            </Text>
+                        </PartText>
+                    </Default>
+                </Condition>
+            </Complication>
+            <Complication type="RANGED_VALUE">
+                <PartDraw x="0" y="0" width="320" height="58">
+                    <Variant mode="AMBIENT" target="alpha" value="0" />
+                    <RoundRectangle x="0" y="0" width="320" height="58" cornerRadiusX="29" cornerRadiusY="29">
+                        <Fill color="[CONFIGURATION.theme.1]" />
+                    </RoundRectangle>
+                    <RoundRectangle x="24" y="46" width="272" height="5" cornerRadiusX="2.5" cornerRadiusY="2.5">
+                        <Transform target="width"
+                            value="272 * ([COMPLICATION.RANGED_VALUE_VALUE] - [COMPLICATION.RANGED_VALUE_MIN]) / ([COMPLICATION.RANGED_VALUE_MAX] - [COMPLICATION.RANGED_VALUE_MIN])" />
+                        <Fill color="[CONFIGURATION.theme.0]" />
+                    </RoundRectangle>
+                </PartDraw>
+                <PartText x="18" y="0" width="284" height="48">
+                    <Text align="CENTER" ellipsis="TRUE">
+                        <Font family="SYNC_TO_DEVICE" size="24" weight="MEDIUM" color="#FFFFFFFF">
+                            <Template>%s · %s<Parameter expression="[COMPLICATION.TITLE]" /><Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                        </Font>
+                    </Text>
+                </PartText>
+            </Complication>
+            <Complication type="EMPTY" />
+        </ComplicationSlot>
+
+        <!-- Alt bilgi (varsayılan: adım) -->
+        <ComplicationSlot x="150" y="360" width="150" height="44" slotId="1" displayName="slot_bottom"
+            supportedTypes="SHORT_TEXT EMPTY" isCustomizable="TRUE">
+            <DefaultProviderPolicy defaultSystemProvider="STEP_COUNT" defaultSystemProviderType="SHORT_TEXT" />
+            <BoundingRoundBox x="0" y="0" width="150" height="44" cornerRadius="22" />
+            <Complication type="SHORT_TEXT">
+                <PartText x="0" y="0" width="150" height="44">
+                    <Text align="CENTER" ellipsis="TRUE">
+                        <Font family="SYNC_TO_DEVICE" size="24" weight="MEDIUM" color="#FF9A9A9A">
+                            <Template>%s<Parameter expression="[COMPLICATION.TEXT]" /></Template>
+                        </Font>
+                    </Text>
+                </PartText>
+            </Complication>
+            <Complication type="EMPTY" />
+        </ComplicationSlot>
+    </Scene>
+</WatchFace>

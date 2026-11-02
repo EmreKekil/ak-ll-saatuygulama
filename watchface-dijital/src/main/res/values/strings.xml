@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="watch_face_name">Sade Dijital</string>
+    <string name="theme_label">Renk</string>
+    <string name="theme_green">Yeşil</string>
+    <string name="theme_blue">Mavi</string>
+    <string name="theme_gold">Altın</string>
+    <string name="theme_white">Beyaz</string>
+    <string name="slot_prayer">Sonraki vakit</string>
+    <string name="slot_bottom">Alt bilgi</string>
+</resources>

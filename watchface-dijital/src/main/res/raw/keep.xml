@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Kadran kaynakları koddan değil watchface.xml'den adlarıyla anılır; silinmesin, kullanılmıyor sayılmasın. -->
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:keep="@string/*,@drawable/*,@raw/watchface,@xml/watch_face_info" />

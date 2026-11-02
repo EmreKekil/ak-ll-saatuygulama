@@ -12,6 +12,8 @@ data class District(
     val name: String,
     val location: LatLon,
     val isProvinceCenter: Boolean,
+    /** Diyanet'in vakit yayımladığı yer kimliği; ayrı kaydı olmayan ilçeler en yakın kayda bağlıdır. */
+    val diyanetId: Int,
 ) {
     /** Gerçek kuzeye göre kıble açısı (derece). Uygulamaya gömülü koordinattan hesaplanır. */
     val qiblaBearing: Double = Qibla.bearing(location)
@@ -53,7 +55,7 @@ class PlaceTable(val districts: List<District>) {
 
     companion object {
         /**
-         * "plate,province,district,lat,lon,is_province_center,source" başlıklı CSV'yi okur.
+         * "plate,province,district,lat,lon,is_province_center,diyanet_id,source" başlıklı CSV'yi okur.
          * Adlarda virgül bulunmadığından basit bölme yeterlidir.
          */
         fun parse(csv: String): PlaceTable {
@@ -66,6 +68,7 @@ class PlaceTable(val districts: List<District>) {
             val lat = column("lat")
             val lon = column("lon")
             val center = column("is_province_center")
+            val diyanet = column("diyanet_id")
             val districts = lines.drop(1).map { line ->
                 val cells = line.split(',')
                 District(
@@ -74,6 +77,7 @@ class PlaceTable(val districts: List<District>) {
                     name = cells[district].trim(),
                     location = LatLon(cells[lat].trim().toDouble(), cells[lon].trim().toDouble()),
                     isProvinceCenter = cells[center].trim().let { it == "1" || it.equals("true", ignoreCase = true) },
+                    diyanetId = cells[diyanet].trim().toInt(),
                 )
             }
             return PlaceTable(districts)

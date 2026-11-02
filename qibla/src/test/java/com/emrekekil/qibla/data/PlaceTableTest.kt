@@ -39,6 +39,14 @@ class PlaceTableTest {
     }
 
     @Test
+    fun everyDistrictHasDiyanetLocation() {
+        assertTrue(table.districts.all { it.diyanetId > 0 })
+        // Diyanet, Ankara'nın merkez ilçelerini tek "ANKARA" kaydında toplar.
+        assertEquals(9206, table.find(6, "Çankaya")!!.diyanetId)
+        assertEquals(9206, table.find(6, "Altındağ")!!.diyanetId)
+    }
+
+    @Test
     fun nearestFindsDistrictSeat() {
         val (district, km) = table.nearest(LatLon(38.4985, 43.3730))!! // Van şehir merkezi
         assertEquals("Van", district.province)

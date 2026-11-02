@@ -23,6 +23,25 @@ object Solar {
      * @param longitude derece, doğu pozitif
      */
     fun position(epochMillis: Long, latitude: Double, longitude: Double): SunPosition {
+        val (declination, equationOfTime) = ephemeris(epochMillis)
+        val minutesUtc = Math.floorMod(epochMillis, 86_400_000L) / 60_000.0
+        val trueSolarMinutes = minutesUtc + equationOfTime + 4 * longitude
+        val hourAngle = Math.toRadians(trueSolarMinutes / 4 - 180)
+
+        val latRad = Math.toRadians(latitude)
+        val cosZenith = (sin(latRad) * sin(declination) + cos(latRad) * cos(declination) * cos(hourAngle))
+            .coerceIn(-1.0, 1.0)
+        val zenith = acos(cosZenith)
+        val azimuth = Angles.normalize(
+            Math.toDegrees(atan2(sin(hourAngle), cos(hourAngle) * sin(latRad) - tan(declination) * cos(latRad))) + 180,
+        )
+        return SunPosition(azimuth = azimuth, altitude = 90 - Math.toDegrees(zenith))
+    }
+
+    /** Güneşin deklinasyonu (radyan) ve zaman denklemi (dakika). */
+    data class Ephemeris(val declination: Double, val equationOfTimeMinutes: Double)
+
+    fun ephemeris(epochMillis: Long): Ephemeris {
         val jd = epochMillis / 86_400_000.0 + 2440587.5
         val t = (jd - 2451545.0) / 36525.0
 
@@ -40,26 +59,13 @@ object Solar {
         val obliquity = Math.toRadians(meanObliquity + 0.00256 * cos(omega))
         val declination = asin(sin(obliquity) * sin(apparentLongitude))
 
-        // Zaman denklemi (dakika).
         val y = tan(obliquity / 2).let { it * it }
         val l0Rad = Math.toRadians(l0)
         val equationOfTime = 4 * Math.toDegrees(
             y * sin(2 * l0Rad) - 2 * e * sin(mRad) + 4 * e * y * sin(mRad) * cos(2 * l0Rad) -
                 0.5 * y * y * sin(4 * l0Rad) - 1.25 * e * e * sin(2 * mRad),
         )
-
-        val minutesUtc = Math.floorMod(epochMillis, 86_400_000L) / 60_000.0
-        val trueSolarMinutes = minutesUtc + equationOfTime + 4 * longitude
-        val hourAngle = Math.toRadians(trueSolarMinutes / 4 - 180)
-
-        val latRad = Math.toRadians(latitude)
-        val cosZenith = (sin(latRad) * sin(declination) + cos(latRad) * cos(declination) * cos(hourAngle))
-            .coerceIn(-1.0, 1.0)
-        val zenith = acos(cosZenith)
-        val azimuth = Angles.normalize(
-            Math.toDegrees(atan2(sin(hourAngle), cos(hourAngle) * sin(latRad) - tan(declination) * cos(latRad))) + 180,
-        )
-        return SunPosition(azimuth = azimuth, altitude = 90 - Math.toDegrees(zenith))
+        return Ephemeris(declination, equationOfTime)
     }
 
     /**

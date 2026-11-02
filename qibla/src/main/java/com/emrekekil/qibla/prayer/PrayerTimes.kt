@@ -28,7 +28,25 @@ data class PrayerMoment(
     val nextStart: LocalDateTime,
 )
 
+/** Bir vaktin girişinden bir sonraki vaktin girişine kadar süren aralık. */
+data class PrayerWindow(
+    val current: Prayer,
+    val start: LocalDateTime,
+    val next: Prayer,
+    val end: LocalDateTime,
+)
+
 object PrayerSchedule {
+
+    /**
+     * [from]–[until] arasına değen tüm vakit aralıkları, sırayla. Komplikasyon ve Tile bunları zaman
+     * çizelgesi olarak verir; sistem vakit değişince uygulamayı uyandırmadan sıradakine geçer.
+     */
+    fun windows(days: List<DayTimes>, from: LocalDateTime, until: LocalDateTime): List<PrayerWindow> {
+        val starts = days.sortedBy { it.date }.flatMap { day -> Prayer.entries.map { it to day.at(it) } }
+        return starts.zipWithNext { (current, start), (next, end) -> PrayerWindow(current, start, next, end) }
+            .filter { it.end.isAfter(from) && it.start.isBefore(until) }
+    }
 
     /**
      * [now] anında hangi vaktin içinde olunduğunu bulur. Gece yarısından İmsak'a kadar olan süre

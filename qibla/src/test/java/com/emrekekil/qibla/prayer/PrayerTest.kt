@@ -82,6 +82,20 @@ class PrayerScheduleTest {
     }
 
     @Test
+    fun windowsCoverNext24HoursWithoutGaps() {
+        val d = LocalDate.of(2026, 11, 2)
+        val days = listOf(day(d.minusDays(1)), day(d), day(d.plusDays(1)), day(d.plusDays(2)))
+        val from = LocalDateTime.of(d, LocalTime.of(2, 0))
+        val windows = PrayerSchedule.windows(days, from, from.plusHours(24))
+        // İlk aralık gece yarısını aşan dünkü Yatsı, son aralık ertesi gece 02:00'ı kapsar.
+        assertEquals(Prayer.YATSI, windows.first().current)
+        assertTrue(!windows.first().start.isAfter(from))
+        assertTrue(!windows.last().end.isBefore(from.plusHours(24)))
+        windows.zipWithNext { a, b -> assertEquals(a.end, b.start) }
+        assertEquals(7, windows.size)
+    }
+
+    @Test
     fun afternoonIsIkindiUntilAksam() {
         val d = LocalDate.of(2026, 11, 2)
         val days = listOf(day(d), day(d.plusDays(1)))

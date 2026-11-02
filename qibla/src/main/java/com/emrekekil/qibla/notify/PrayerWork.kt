@@ -12,6 +12,7 @@ import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.emrekekil.qibla.data.LocationRepository
 import com.emrekekil.qibla.prayer.PrayerEngine
+import com.emrekekil.qibla.surface.PrayerSurfaces
 import java.util.concurrent.TimeUnit
 
 /**
@@ -26,6 +27,8 @@ class PrayerDailyWorker(context: Context, params: WorkerParameters) : CoroutineW
         LocationRepository(applicationContext).bestKnown()?.let { engine.onPosition(it.location) }
         if (engine.needsRefresh()) PrayerWork.requestSync(applicationContext)
         PrayerAlarms.schedule(applicationContext)
+        // Komplikasyon ve Tile'ın zaman çizelgesi günde bir yenilenir.
+        PrayerSurfaces.requestUpdate(applicationContext)
         return Result.success()
     }
 }
@@ -34,7 +37,7 @@ class PrayerDailyWorker(context: Context, params: WorkerParameters) : CoroutineW
 class PrayerSyncWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
         val engine = PrayerEngine(applicationContext)
-        engine.refresh()
+        if (engine.refresh()) PrayerSurfaces.requestUpdate(applicationContext)
         PrayerAlarms.schedule(applicationContext)
         // İndirme başarısız olsa da yeniden deneme yok: vakitler hesapla gösterilir, ertesi gün tekrar denenir.
         return Result.success()

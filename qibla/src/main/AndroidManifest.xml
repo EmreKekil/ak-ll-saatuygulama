@@ -48,6 +48,40 @@
             </intent-filter>
         </activity>
 
+        <!-- Saat kadranı komplikasyonu: periyodik güncelleme yok, zaman çizelgesiyle ilerler. -->
+        <service
+            android:name=".surface.PrayerComplicationService"
+            android:exported="true"
+            android:icon="@drawable/ic_notification"
+            android:label="@string/complication_label"
+            android:permission="com.google.android.wearable.permission.BIND_COMPLICATION_PROVIDER">
+            <intent-filter>
+                <action android:name="android.support.wearable.complications.ACTION_COMPLICATION_UPDATE_REQUEST" />
+            </intent-filter>
+            <meta-data
+                android:name="android.support.wearable.complications.SUPPORTED_TYPES"
+                android:value="SHORT_TEXT,LONG_TEXT,RANGED_VALUE" />
+            <meta-data
+                android:name="android.support.wearable.complications.UPDATE_PERIOD_SECONDS"
+                android:value="0" />
+        </service>
+
+        <!-- Tile: zaman çizelgesiyle ilerler, kalan süreyi kendisi sayar. -->
+        <service
+            android:name=".surface.PrayerTileService"
+            android:exported="true"
+            android:description="@string/tile_description"
+            android:icon="@drawable/ic_notification"
+            android:label="@string/tile_label"
+            android:permission="com.google.android.wearable.permission.BIND_TILE_PROVIDER">
+            <intent-filter>
+                <action android:name="androidx.wear.tiles.action.BIND_TILE_PROVIDER" />
+            </intent-filter>
+            <meta-data
+                android:name="androidx.wear.tiles.PREVIEW"
+                android:resource="@drawable/tile_preview" />
+        </service>
+
         <receiver
             android:name=".notify.PrayerAlarmReceiver"
             android:exported="false" />

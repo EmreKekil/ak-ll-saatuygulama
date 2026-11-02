@@ -19,6 +19,17 @@ ne kadarının geçtiği, altta günün altı vakti. Soldan sağa kaydırınca k
 - **Bildirimler:** Her vakit için "vakit girince" ve "çıkmadan önce" bildirimi ayrı ayrı açılıp
   kapatılır; uyarı süresi 15–120 dk arasında seçilir (vakitler sayfasında sayaca dokunun).
 
+## Saat kadranı komplikasyonu ve Tile
+
+- **Komplikasyon** ("Sonraki vakit"): kadrana uzun basın → Özelleştir → bir komplikasyon yuvası →
+  "Ezan Vakti ve Kıble". Kısa metin (vakit adı + kalan süre), uzun metin (konum, vakit saati, kalan
+  süre) ve ilerleme halkası (şimdiki vaktin geçen kısmı) türleri desteklenir.
+- **Tile** ("Ezan Vakti"): kadrandan sola kaydırıp Tile'ların sonundaki **+** ile ekleyin. Konum,
+  bir sonraki vakte kalan süre ve günün altı vakti görünür; dokununca uygulama açılır.
+- İkisi de 30 saatlik bir zaman çizelgesiyle gelir: vakit değişince sistem sıradakine kendisi geçer,
+  kalan süreyi kadran/Tile kendisi sayar. Uygulama bunun için uyanmaz; çizelge günde bir (ve konum veya
+  vakit verisi değişince) yenilenir.
+
 ## Pil
 
 Saat pili için uygulamada bilinçli tercihler:
@@ -99,6 +110,7 @@ qibla/src/main/java/com/emrekekil/qibla/
   geo/      # kıble formülü, WMM2025, güneş konumu (saf Kotlin, birim testli)
   sensor/   # pusula sensörleri, ekran yönü, manyetik parazit, titreşim
   prayer/   # ezan vakitleri: Diyanet verisi, çevrimdışı hesap, bildirim planı
+  surface/  # saat kadranı komplikasyonu ve Tile
   notify/   # alarm, bildirim ve günlük arka plan işi
   data/     # konum (GPS), il/ilçe tablosu, ayarlar, ViewModel
   ui/       # pusula, ayrıntılar, konum, il/ilçe seçimi, kalibrasyon

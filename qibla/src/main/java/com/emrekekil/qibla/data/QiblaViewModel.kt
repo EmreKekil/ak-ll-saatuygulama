@@ -14,6 +14,7 @@ import com.emrekekil.qibla.prayer.AlertSetting
 import com.emrekekil.qibla.prayer.DayTimes
 import com.emrekekil.qibla.prayer.Prayer
 import com.emrekekil.qibla.prayer.PrayerEngine
+import com.emrekekil.qibla.surface.PrayerSurfaces
 import com.emrekekil.qibla.geo.decimalYear
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -135,6 +136,7 @@ class QiblaViewModel(application: Application) : AndroidViewModel(application) {
                 PrayerWork.ensureScheduled(application)
                 if (prayerEngine.needsRefresh()) PrayerWork.requestSync(application)
                 PrayerAlarms.schedule(application)
+                PrayerSurfaces.requestUpdate(application)
             }
             reloadPrayer()
         }
@@ -157,6 +159,7 @@ class QiblaViewModel(application: Application) : AndroidViewModel(application) {
             if (prayerEngine.onPosition(fix.location)) {
                 if (prayerEngine.needsRefresh()) PrayerWork.requestSync(getApplication())
                 PrayerAlarms.schedule(getApplication())
+                PrayerSurfaces.requestUpdate(getApplication())
                 reloadPrayer()
             }
         }
@@ -168,6 +171,7 @@ class QiblaViewModel(application: Application) : AndroidViewModel(application) {
             _lastKnown.value?.let { prayerEngine.onPosition(it.location) }
             if (prayerEngine.needsRefresh()) PrayerWork.requestSync(getApplication())
             PrayerAlarms.schedule(getApplication())
+            PrayerSurfaces.requestUpdate(getApplication())
             reloadPrayer()
         }
     }

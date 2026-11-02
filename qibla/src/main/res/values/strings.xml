@@ -154,4 +154,12 @@
     <string name="note_prayer_temporary">Ana konumunuz %1$s; şu an bulunduğunuz yerin vakitleri kullanılıyor.</string>
     <string name="pick_home">Ana konumu değiştir</string>
     <string name="note_prayer_offline">Vakitler telefon (Bluetooth) veya Wi-Fi üzerinden Diyanet\'ten günde en fazla bir kez indirilir; bağlantı yoksa saatte hesaplanır.</string>
+
+    <!-- Komplikasyon ve Tile -->
+    <string name="complication_label">Sonraki vakit</string>
+    <string name="complication_description">%1$s vakti %2$s</string>
+    <string name="complication_long">%1$s %2$s · ^1</string>
+    <string name="complication_preview_place">Ankara</string>
+    <string name="tile_label">Ezan Vakti</string>
+    <string name="tile_description">Bir sonraki vakit ve kalan süre</string>
 </resources>

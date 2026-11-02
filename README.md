@@ -6,11 +6,11 @@ kadranı kendisi çizer (pil dostu, ortam modu hazır).
 
 | Modül | Kadran | Durum |
 |---|---|---|
-| `watchface-dijital` | **Sade Dijital** | hazır |
+| `watchface-dijital` | **Vakit Dijital** | hazır |
 | `watchface-analog` | Sade Analog | sırada |
 | `watchface-spor` | Hibrit / Spor | sırada |
 
-## Sade Dijital
+## Vakit Dijital
 
 Büyük iki renkli saat (saat beyaz, dakika vurgu renginde), Türkçe tarih, pil, saniye halkası ve iki
 komplikasyon yuvası:
@@ -27,7 +27,7 @@ komplikasyon yuvası:
 adb install -r watchface-dijital-release.apk
 ```
 
-Ardından kadrana uzun basın, kaydırıp **Sade Dijital**'i seçin.
+Ardından kadrana uzun basın, kaydırıp **Vakit Dijital**'i seçin (Samsung'un kendi "Sade Dijital" kadranıyla karışmasın diye bu ad seçildi).
 
 ## Geliştirme
 

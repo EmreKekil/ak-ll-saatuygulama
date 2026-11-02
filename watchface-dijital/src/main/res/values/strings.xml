@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="watch_face_name">Sade Dijital</string>
+    <string name="watch_face_name">Vakit Dijital</string>
     <string name="theme_label">Renk</string>
     <string name="theme_green">Yeşil</string>
     <string name="theme_blue">Mavi</string>

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-    Sade Dijital: büyük iki renkli saat, Türkçe tarih, pil, saniye halkası ve iki komplikasyon yuvası.
+    Vakit Dijital: büyük iki renkli saat, Türkçe tarih, pil, saniye halkası ve iki komplikasyon yuvası.
     Üstteki geniş yuva varsayılan olarak "Ezan Vakti ve Kıble" uygulamasının "Sonraki vakit"
     verisini gösterir; uygulama yüklü değilse saatin gün doğumu/batımı verisi kullanılır.
     Ortam modunda (AOD) dolgu ve saniye halkası gizlenir, saat ince yazılır.
